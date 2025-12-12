@@ -127,14 +127,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isNameDeleting && nameIndex < name.length) {
       nameText = name.slice(0, nameIndex + 1);
       nameIndex++;
-    } else if (isNameDeleting && nameIndex > 0) {
+    } else if (isNameDeleting && nameIndex > 1) {
       nameText = name.slice(0, nameIndex - 1);
       nameIndex--;
     } else if (nameIndex === name.length) {
       isNameDeleting = true;
       setTimeout(typeWriterName, 10000);
       return;
-    } else if (nameIndex === 0) {
+    } else if (nameIndex === 1) {
       isNameDeleting = false;
     }
     profileName.textContent = nameText + (nameCursorVisible ? '|' : ' ');
