@@ -153,7 +153,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const bioMessages = [
     "Edeb bir tâc imiş nûr-ı Hüdâ’dan, giy ol tâcı emin ol her belâdan.",
-    "Söz ile değil, hâl ile görünür kişi; edep ile yükselir işin işi."
+    "Söz ile değil, hâl ile görünür kişi; edep ile yükselir işin işi.",
+    "Söz uçar sanan yanılır, iz bırakır her hece; vakti gelince konuşur susulan gece.",
+    "Akıl yol sorar, gönül yön çizer; biri durur, diğeri sessizce gider.",
+    "Sabır ağırdır taşıyana, fakat hafiftir varana; acele düşer yolda, sükût çıkar yana.",
+    "Gönül aynadır, toz tutar hoyrat bakana; temiz kalan gösterir hakikati anlayana.",
+    "Vakit öğretir kim olduğunu, bekleyene sabırla; acele eden kaybeder kendisini bir hızla.",
+    "Söz verir anlık cesaret, hâl ister omurga; kalan budur yarınla.",
+    "Kibir sesi yükseltir, boşlukta yankı olur; sükût ağırdır, yere basar, iz bırakır.",
+    "Nef’î’nin sert dili değil, Yunus’un sükûtu büyütür insanı, söz keskin olabilir, hâl ağırdır; iz bırakan budur zamanı."
   ];
 
   let bioText = "";
