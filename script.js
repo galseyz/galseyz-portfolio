@@ -117,29 +117,39 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 500);
 
   // İsim typewriter (boş kalmasın diye: silme bittiğinde geri yaz)
-  const name = "GALSEYZ";
-  let nameText = "";
-  let nameIndex = 0;
-  let isNameDeleting = false;
-  let nameCursorVisible = true;
+const name = "GALSEYZ";
+const MIN_CHARS = 1; // "G" sabit kalsın
 
-  function typeWriterName() {
-    if (!isNameDeleting && nameIndex < name.length) {
-      nameText = name.slice(0, nameIndex + 1);
-      nameIndex++;
-    } else if (isNameDeleting && nameIndex > 0) {
-      nameText = name.slice(0, nameIndex - 1);
-      nameIndex--;
-    } else if (nameIndex === name.length) {
-      isNameDeleting = true;
-      setTimeout(typeWriterName, 6000); // bekleme süresi
-      return;
-    } else if (nameIndex === 0 && isNameDeleting) {
-      // Silme bitti -> tekrar yazmaya dön
-      isNameDeleting = false;
-      setTimeout(typeWriterName, 600);
-      return;
-    }
+let nameText = "";
+let nameIndex = 0;
+let isNameDeleting = false;
+let nameCursorVisible = true;
+
+function typeWriterName() {
+  if (!isNameDeleting && nameIndex < name.length) {
+    nameIndex++;
+    nameText = name.slice(0, nameIndex);
+
+  } else if (isNameDeleting && nameIndex > MIN_CHARS) {
+    nameIndex--;
+    nameText = name.slice(0, nameIndex);
+
+  } else if (nameIndex === name.length) {
+    isNameDeleting = true;
+    setTimeout(typeWriterName, 6000); // tam yazılı bekle
+    return;
+
+  } else if (nameIndex === MIN_CHARS && isNameDeleting) {
+    isNameDeleting = false;
+    setTimeout(typeWriterName, 600); // G kalır, tekrar yaz
+    return;
+  }
+
+  profileName.textContent = nameText + (nameCursorVisible ? "|" : " ");
+
+  setTimeout(typeWriterName, isNameDeleting ? 120 : 220);
+}
+
 
     profileName.textContent = nameText + (nameCursorVisible ? "|" : " ");
 
