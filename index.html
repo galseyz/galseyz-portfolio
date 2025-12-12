@@ -7,7 +7,6 @@
     <meta name="description" content="made by galseyz">
 
     <!-- Sekme logosu (favicon) -->
-    <!-- İstersen başka bir SVG/PNG linkiyle değiştirebilirsin -->
     <link rel="icon" type="image/svg+xml"
           href="https://api.iconify.design/ph:game-controller-bold.svg?color=%23ffffff" />
 
@@ -719,11 +718,302 @@
                 margin-top: 2.4rem;
             }
         }
+
+        /* ===== GİRİŞ EKRANI + MÜZİK KONTROLÜ ===== */
+
+        .intro-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background:
+                radial-gradient(circle at 0% -20%, #312e81 0, transparent 50%),
+                radial-gradient(circle at 100% 120%, #4c1d95 0, transparent 55%),
+                radial-gradient(circle at 50% 120%, #020617 0, #020617 65%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            backdrop-filter: blur(18px);
+            transition:
+                opacity 0.75s ease,
+                transform 0.75s ease,
+                visibility 0.75s ease;
+        }
+
+        .intro-overlay::before {
+            content: "";
+            position: absolute;
+            inset: -60px;
+            background-image:
+                linear-gradient(rgba(148,163,184,0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148,163,184,0.07) 1px, transparent 1px);
+            background-size: 46px 46px;
+            opacity: 0.5;
+            mix-blend-mode: soft-light;
+            pointer-events: none;
+        }
+
+        .intro-inner {
+            position: relative;
+            max-width: 460px;
+            width: 100%;
+            border-radius: 26px;
+            padding: 1.9rem 1.8rem;
+            background:
+                radial-gradient(circle at top left, rgba(88,101,242,0.25), transparent 55%),
+                radial-gradient(circle at bottom, rgba(15,23,42,0.98), #020617 95%);
+            border: 1px solid rgba(148,163,184,0.35);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.85);
+            text-align: left;
+            overflow: hidden;
+        }
+
+        .intro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.28rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,0.5);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+            color: var(--muted);
+            background: rgba(15,23,42,0.9);
+            margin-bottom: 0.9rem;
+        }
+
+        .intro-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--success);
+            box-shadow: 0 0 0 4px rgba(74,222,128,0.3);
+        }
+
+        .intro-title {
+            font-size: 1.7rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .intro-title span {
+            background: linear-gradient(120deg, #e5e7ff, #a5b4fc, #f97316);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .intro-sub {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 1.2rem;
+        }
+
+        .intro-sub small {
+            display: block;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        .intro-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            align-items: center;
+        }
+
+        .intro-btn-main {
+            border-radius: 999px;
+            padding: 0.6rem 1.3rem;
+            border: none;
+            cursor: pointer;
+            background: radial-gradient(circle at 0 0, #ffffff, #a5b4fc 18%, #4f46e5 48%, #111827 90%);
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            box-shadow: 0 16px 42px rgba(79,70,229,0.9);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-btn-main::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 0 0, rgba(255,255,255,0.25), transparent 55%);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .intro-btn-main:hover::after {
+            opacity: 1;
+        }
+
+        .intro-btn-ghost {
+            border-radius: 999px;
+            padding: 0.55rem 1.1rem;
+            border: 1px solid rgba(148,163,184,0.5);
+            background: rgba(15,23,42,0.9);
+            color: var(--muted);
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: default;
+        }
+
+        .intro-small-note {
+            font-size: 0.72rem;
+            color: var(--muted);
+            opacity: 0.85;
+            margin-top: 0.7rem;
+        }
+
+        .intro-overlay.intro-hidden {
+            opacity: 0;
+            transform: scale(0.97) translateY(-10px);
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Müzik toggle butonu (sağ alt) */
+        .music-toggle {
+            position: fixed;
+            right: 1.6rem;
+            bottom: 1.6rem;
+            z-index: 40;
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,0.55);
+            background: rgba(15,23,42,0.96);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 16px 40px rgba(15,23,42,0.9);
+            transition:
+                transform 0.14s ease,
+                box-shadow 0.16s ease,
+                border-color 0.16s ease,
+                background 0.16s ease;
+        }
+
+        .music-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 50px rgba(15,23,42,0.95);
+            border-color: rgba(191,219,254,0.9);
+            background: rgba(15,23,42,1);
+        }
+
+        .music-icon {
+            position: relative;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Ses dalgaları / ikon görünümü */
+        .music-icon::before,
+        .music-icon::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            inset: 0;
+            background: linear-gradient(145deg, #a5b4fc, #4f46e5);
+            box-shadow: 0 0 0 0 rgba(88,101,242,0.6);
+        }
+
+        .music-toggle.is-playing .music-icon::before {
+            animation: musicPulse 1.3s infinite;
+        }
+
+        .music-toggle.is-playing .music-icon::after {
+            inset: 3px;
+            background: radial-gradient(circle at 30% 0, #ffffff, #a5b4fc 30%, #111827 85%);
+        }
+
+        /* Pause görünümü */
+        .music-toggle:not(.is-playing) .music-icon::before {
+            inset: 2px;
+            background: none;
+            box-shadow: none;
+            border-left: 3px solid #e5e7eb;
+            border-right: 3px solid #e5e7eb;
+        }
+
+        .music-toggle:not(.is-playing) .music-icon::after {
+            display: none;
+        }
+
+        @keyframes musicPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(88,101,242,0.7);
+            }
+            100% {
+                box-shadow: 0 0 0 14px rgba(88,101,242,0);
+            }
+        }
+
+        @media (max-width: 540px) {
+            .intro-inner {
+                padding: 1.6rem 1.4rem;
+            }
+            .intro-title {
+                font-size: 1.45rem;
+            }
+            .music-toggle {
+                right: 1rem;
+                bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="orb"></div>
 <div class="noise"></div>
+
+<!-- Arkaplan müziği -->
+<!-- BURAYA KENDİ MÜZİK DOSYANIN LİNKİNİ KOY -->
+<audio id="bg-music" src="assets/bg-music.mp3" loop></audio>
+
+<!-- GİRİŞ EKRANI -->
+<div class="intro-overlay" id="intro">
+    <div class="intro-inner">
+        <div class="intro-badge">
+            <span class="intro-dot"></span>
+            GALSEYZ • TSG STUDIOS
+        </div>
+        <h1 class="intro-title">
+            <span>Baby Chaos</span> ve diğer projelere<br> hoş geldin.
+        </h1>
+        <p class="intro-sub">
+            Siteye giriş yaptığında arkada loş bir müzik eşliğinde
+            projelerimizi keşfedebilirsin.
+            <small>(Müziği daha sonra sağ alttan durdurup tekrar başlatabilirsin.)</small>
+        </p>
+        <div class="intro-actions">
+            <button id="enter-btn" class="intro-btn-main">
+                Siteye gir & müziği başlat
+            </button>
+            <div class="intro-btn-ghost">
+                <span style="width:8px;height:8px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,0.3);"></span>
+                Hazırsan tek tık yeter
+            </div>
+        </div>
+        <div class="intro-small-note">
+            Bazı tarayıcılarda ses için tıklama zorunlu olduğu için
+            müzik, bu butona bastıktan sonra başlar.
+        </div>
+    </div>
+</div>
+
+<!-- MÜZİK KONTROL BUTONU -->
+<button class="music-toggle" id="musicToggle" aria-label="Müziği durdur / devam ettir">
+    <span class="music-icon"></span>
+</button>
 
 <header>
     <nav class="nav">
@@ -983,6 +1273,76 @@
     <span>© <script>document.write(new Date().getFullYear());</script> galseyz tarafından sevgiyle hazırlandı ❤️</span>
     <span>TSG & Anatolian Studios</span>
 </footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const intro = document.getElementById("intro");
+        const enterBtn = document.getElementById("enter-btn");
+        const audio = document.getElementById("bg-music");
+        const musicToggle = document.getElementById("musicToggle");
+
+        let isPlaying = false;
+
+        function updateToggle() {
+            if (!musicToggle) return;
+            if (isPlaying) {
+                musicToggle.classList.add("is-playing");
+            } else {
+                musicToggle.classList.remove("is-playing");
+            }
+        }
+
+        function safePlay() {
+            if (!audio) return;
+            audio.volume = 0.4;
+            audio.play()
+                .then(function () {
+                    isPlaying = true;
+                    updateToggle();
+                })
+                .catch(function () {
+                    isPlaying = false;
+                    updateToggle();
+                });
+        }
+
+        if (enterBtn) {
+            enterBtn.addEventListener("click", function () {
+                if (intro) {
+                    intro.classList.add("intro-hidden");
+                    setTimeout(function () {
+                        intro.style.display = "none";
+                    }, 800);
+                }
+                safePlay();
+            });
+        }
+
+        if (musicToggle) {
+            musicToggle.addEventListener("click", function () {
+                if (!audio) return;
+
+                if (audio.paused) {
+                    audio.play()
+                        .then(function () {
+                            isPlaying = true;
+                            updateToggle();
+                        })
+                        .catch(function () {
+                            isPlaying = false;
+                            updateToggle();
+                        });
+                } else {
+                    audio.pause();
+                    isPlaying = false;
+                    updateToggle();
+                }
+            });
+        }
+
+        updateToggle();
+    });
+</script>
 
 </body>
 </html>
