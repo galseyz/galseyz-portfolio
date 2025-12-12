@@ -4,18 +4,18 @@ function initMedia() {
   const backgroundMusic = document.getElementById("background-music");
   const backgroundVideo = document.getElementById("background");
 
-  if (!backgroundMusic || !backgroundVideo) {
-    console.error("Media elements not found");
-    return;
+  if (backgroundMusic) {
+    backgroundMusic.volume = 0.3;
+    backgroundMusic.muted = true; // start ekranında açacağız
   }
 
-  backgroundMusic.volume = 0.3;
-  backgroundMusic.muted = true; // start ekranında tıklayınca açacağız
-  backgroundVideo.muted = true;
-
-  backgroundVideo.play().catch((err) => {
-    console.error("Failed to play background video:", err);
-  });
+  if (backgroundVideo) {
+    backgroundVideo.muted = true;
+    const p = backgroundVideo.play();
+    if (p && typeof p.catch === "function") {
+      p.catch((err) => console.warn("Background video autoplay blocked:", err));
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -26,10 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const profileBio = document.getElementById("profile-bio");
 
   const backgroundMusic = document.getElementById("background-music");
-
-  const resultsButtonContainer = document.getElementById("results-button-container");
-  const resultsButton = document.getElementById("results-theme");
-  const resultsHint = document.getElementById("results-hint");
 
   const volumeIcon = document.getElementById("volume-icon");
   const volumeSlider = document.getElementById("volume-slider");
@@ -43,14 +39,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const cppBar = document.getElementById("cpp-bar");
   const csharpBar = document.getElementById("csharp-bar");
 
+  const resultsButtonContainer = document.getElementById("results-button-container");
+  const resultsButton = document.getElementById("results-theme");
+  const resultsHint = document.getElementById("results-hint");
+
   const profilePicture = document.querySelector(".profile-picture");
   const profileContainer = document.querySelector(".profile-container");
   const socialIcons = document.querySelectorAll(".social-icon");
   const badges = document.querySelectorAll(".badge");
 
-  // Güvenlik: element yoksa patlamasın
-  if (!startScreen || !startText || !profileName || !profileBio || !backgroundMusic) {
-    console.error("Required elements missing in HTML.");
+  // Minimum gerekli elementler
+  if (!startScreen || !startText || !profileName || !profileBio) {
+    console.error("Required elements missing in HTML (start-screen / start-text / profile-name / profile-bio).");
     return;
   }
 
@@ -63,16 +63,16 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.add("touch-device");
 
       document.addEventListener("touchstart", (e) => {
-        const touch = e.touches[0];
-        cursor.style.left = touch.clientX + "px";
-        cursor.style.top = touch.clientY + "px";
+        const t = e.touches[0];
+        cursor.style.left = t.clientX + "px";
+        cursor.style.top = t.clientY + "px";
         cursor.style.display = "block";
       });
 
       document.addEventListener("touchmove", (e) => {
-        const touch = e.touches[0];
-        cursor.style.left = touch.clientX + "px";
-        cursor.style.top = touch.clientY + "px";
+        const t = e.touches[0];
+        cursor.style.left = t.clientX + "px";
+        cursor.style.top = t.clientY + "px";
         cursor.style.display = "block";
       });
 
@@ -116,58 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     startText.textContent = startTextContent + (startCursorVisible ? "|" : " ");
   }, 500);
 
-  // Start ekran tıklanınca müzik başlat + profile aç
-  function enterSite() {
-    startScreen.classList.add("hidden");
-
-    backgroundMusic.muted = false;
-    backgroundMusic.play().catch((err) => {
-      console.error("Failed to play music after start:", err);
-    });
-
-    if (profileBlock) {
-      profileBlock.classList.remove("hidden");
-      gsap.fromTo(
-        profileBlock,
-        { opacity: 0, y: -50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power2.out",
-          onComplete: () => {
-            profileBlock.classList.add("profile-appear");
-            if (profileContainer) profileContainer.classList.add("orbit");
-          },
-        }
-      );
-    }
-
-    if (!isTouchDevice) {
-      // cursorTrailEffect varsa çalıştır, yoksa hata basmasın.
-      try {
-        if (typeof cursorTrailEffect === "function") {
-          new cursorTrailEffect({ length: 10, size: 8, speed: 0.2 });
-        }
-      } catch (err) {
-        console.error("Cursor trail init error:", err);
-      }
-    }
-
-    typeWriterName();
-    typeWriterBio();
-
-    // Results butonu artık her zaman görünsün (tema şartı yok)
-    if (resultsButtonContainer) resultsButtonContainer.classList.remove("hidden");
-  }
-
-  startScreen.addEventListener("click", enterSite);
-  startScreen.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    enterSite();
-  });
-
-  // İsim typewriter
+  // İsim typewriter (boş kalmasın diye: silme bittiğinde geri yaz)
   const name = "GALSEYZ";
   let nameText = "";
   let nameIndex = 0;
@@ -183,20 +132,23 @@ document.addEventListener("DOMContentLoaded", () => {
       nameIndex--;
     } else if (nameIndex === name.length) {
       isNameDeleting = true;
-      setTimeout(typeWriterName, 10000);
+      setTimeout(typeWriterName, 6000); // bekleme süresi
       return;
-    } else if (nameIndex === 0) {
+    } else if (nameIndex === 0 && isNameDeleting) {
+      // Silme bitti -> tekrar yazmaya dön
       isNameDeleting = false;
+      setTimeout(typeWriterName, 600);
+      return;
     }
 
     profileName.textContent = nameText + (nameCursorVisible ? "|" : " ");
 
-    if (Math.random() < 0.1) {
+    if (Math.random() < 0.08) {
       profileName.classList.add("glitch");
-      setTimeout(() => profileName.classList.remove("glitch"), 200);
+      setTimeout(() => profileName.classList.remove("glitch"), 150);
     }
 
-    setTimeout(typeWriterName, isNameDeleting ? 150 : 300);
+    setTimeout(typeWriterName, isNameDeleting ? 120 : 220);
   }
 
   setInterval(() => {
@@ -207,8 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Bio typewriter
   const bioMessages = [
     "Edeb bir tâc imiş nûr-ı Hüdâ’dan, giy ol tâcı emin ol her belâdan.",
-    "\"Söz ile değil, hâl ile görünür kişi, Edep ile yükselir her işin işi.\"",
+    "Söz ile değil, hâl ile görünür kişi; edep ile yükselir işin işi."
   ];
+
   let bioText = "";
   let bioIndex = 0;
   let bioMessageIndex = 0;
@@ -216,29 +169,33 @@ document.addEventListener("DOMContentLoaded", () => {
   let bioCursorVisible = true;
 
   function typeWriterBio() {
-    if (!isBioDeleting && bioIndex < bioMessages[bioMessageIndex].length) {
-      bioText = bioMessages[bioMessageIndex].slice(0, bioIndex + 1);
+    const current = bioMessages[bioMessageIndex];
+
+    if (!isBioDeleting && bioIndex < current.length) {
+      bioText = current.slice(0, bioIndex + 1);
       bioIndex++;
     } else if (isBioDeleting && bioIndex > 0) {
-      bioText = bioMessages[bioMessageIndex].slice(0, bioIndex - 1);
+      bioText = current.slice(0, bioIndex - 1);
       bioIndex--;
-    } else if (bioIndex === bioMessages[bioMessageIndex].length) {
+    } else if (bioIndex === current.length && !isBioDeleting) {
       isBioDeleting = true;
-      setTimeout(typeWriterBio, 2000);
+      setTimeout(typeWriterBio, 2500);
       return;
     } else if (bioIndex === 0 && isBioDeleting) {
       isBioDeleting = false;
       bioMessageIndex = (bioMessageIndex + 1) % bioMessages.length;
+      setTimeout(typeWriterBio, 400);
+      return;
     }
 
     profileBio.textContent = bioText + (bioCursorVisible ? "|" : " ");
 
-    if (Math.random() < 0.1) {
+    if (Math.random() < 0.06) {
       profileBio.classList.add("glitch");
-      setTimeout(() => profileBio.classList.remove("glitch"), 200);
+      setTimeout(() => profileBio.classList.remove("glitch"), 150);
     }
 
-    setTimeout(typeWriterBio, isBioDeleting ? 75 : 150);
+    setTimeout(typeWriterBio, isBioDeleting ? 55 : 110);
   }
 
   setInterval(() => {
@@ -246,92 +203,128 @@ document.addEventListener("DOMContentLoaded", () => {
     profileBio.textContent = bioText + (bioCursorVisible ? "|" : " ");
   }, 500);
 
-  // Ses kontrolü (tek audio)
+  // Start ekran tıklanınca müzik başlat + profile aç
+  function enterSite() {
+    startScreen.classList.add("hidden");
+
+    if (backgroundMusic) {
+      backgroundMusic.muted = false;
+      const p = backgroundMusic.play();
+      if (p && typeof p.catch === "function") {
+        p.catch((err) => console.warn("Music play blocked:", err));
+      }
+    }
+
+    if (profileBlock) {
+      profileBlock.classList.remove("hidden");
+      if (window.gsap) {
+        gsap.fromTo(
+          profileBlock,
+          { opacity: 0, y: -50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power2.out",
+            onComplete: () => {
+              profileBlock.classList.add("profile-appear");
+              if (profileContainer) profileContainer.classList.add("orbit");
+            },
+          }
+        );
+      } else {
+        profileBlock.style.opacity = "1";
+      }
+    }
+
+    if (!isTouchDevice) {
+      try {
+        if (typeof cursorTrailEffect === "function") {
+          new cursorTrailEffect({ length: 10, size: 8, speed: 0.2 });
+        }
+      } catch (err) {
+        console.warn("Cursor trail init error:", err);
+      }
+    }
+
+    // Typewriter başlat
+    typeWriterName();
+    typeWriterBio();
+
+    // Results butonu HTML'de varsa göster
+    if (resultsButtonContainer) resultsButtonContainer.classList.remove("hidden");
+  }
+
+  startScreen.addEventListener("click", enterSite);
+  startScreen.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    enterSite();
+  });
+
+  // Ses kontrolü
   let isMuted = false;
 
-  if (volumeIcon) {
-    volumeIcon.addEventListener("click", () => {
+  if (volumeIcon && backgroundMusic) {
+    const iconUnmuted = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>`;
+    const iconMuted = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>`;
+
+    const toggleMute = () => {
       isMuted = !isMuted;
       backgroundMusic.muted = isMuted;
+      volumeIcon.innerHTML = isMuted ? iconMuted : iconUnmuted;
+    };
 
-      volumeIcon.innerHTML = isMuted
-        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>`
-        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>`;
-    });
-
+    volumeIcon.addEventListener("click", toggleMute);
     volumeIcon.addEventListener("touchstart", (e) => {
       e.preventDefault();
-      isMuted = !isMuted;
-      backgroundMusic.muted = isMuted;
-
-      volumeIcon.innerHTML = isMuted
-        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>`
-        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>`;
+      toggleMute();
     });
   }
 
-  if (volumeSlider) {
+  if (volumeSlider && backgroundMusic) {
     volumeSlider.addEventListener("input", () => {
-      backgroundMusic.volume = volumeSlider.value;
-      isMuted = false;
+      backgroundMusic.volume = Number(volumeSlider.value);
       backgroundMusic.muted = false;
-
-      if (volumeIcon) {
-        volumeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>`;
-      }
+      isMuted = false;
     });
   }
 
-  // Transparanlık
-  if (transparencySlider && profileBlock && skillsBlock) {
+  // Transparanlık (skills yoksa sadece profile'a uygula)
+  if (transparencySlider && profileBlock) {
     transparencySlider.addEventListener("input", () => {
-      const opacity = transparencySlider.value;
+      const opacity = Number(transparencySlider.value);
 
-      if (opacity == 0) {
-        profileBlock.style.background = "rgba(0, 0, 0, 0)";
-        profileBlock.style.borderColor = "transparent";
-        profileBlock.style.backdropFilter = "none";
+      const apply = (el) => {
+        if (!el) return;
+        if (opacity === 0) {
+          el.style.background = "rgba(0,0,0,0)";
+          el.style.borderColor = "transparent";
+          el.style.backdropFilter = "none";
+        } else {
+          el.style.background = `rgba(0,0,0,${opacity})`;
+          el.style.borderColor = "";
+          el.style.backdropFilter = `blur(${10 * opacity}px)`;
+        }
+        el.style.pointerEvents = "auto";
+      };
 
-        skillsBlock.style.background = "rgba(0, 0, 0, 0)";
-        skillsBlock.style.borderColor = "transparent";
-        skillsBlock.style.backdropFilter = "none";
-      } else {
-        profileBlock.style.background = `rgba(0, 0, 0, ${opacity})`;
-        profileBlock.style.borderColor = "";
-        profileBlock.style.backdropFilter = `blur(${10 * opacity}px)`;
+      apply(profileBlock);
+      apply(skillsBlock);
 
-        skillsBlock.style.background = `rgba(0, 0, 0, ${opacity})`;
-        skillsBlock.style.borderColor = "";
-        skillsBlock.style.backdropFilter = `blur(${10 * opacity}px)`;
-      }
-
-      // tıklanabilirliği koru
-      profileBlock.style.pointerEvents = "auto";
-      socialIcons.forEach((icon) => {
-        icon.style.pointerEvents = "auto";
-        icon.style.opacity = "1";
-      });
-      badges.forEach((badge) => {
-        badge.style.pointerEvents = "auto";
-        badge.style.opacity = "1";
-      });
-
-      if (profilePicture) {
-        profilePicture.style.pointerEvents = "auto";
-        profilePicture.style.opacity = "1";
-      }
-      profileName.style.opacity = "1";
-      profileBio.style.opacity = "1";
+      socialIcons.forEach((icon) => (icon.style.pointerEvents = "auto"));
+      badges.forEach((badge) => (badge.style.pointerEvents = "auto"));
+      if (profilePicture) profilePicture.style.pointerEvents = "auto";
     });
   }
 
   // Tilt efekti
   function handleTilt(e, element) {
+    if (!window.gsap) return;
     const rect = element.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    let clientX, clientY;
 
+    let clientX, clientY;
     if (e.type === "touchmove") {
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
@@ -343,14 +336,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const mouseX = clientX - centerX;
     const mouseY = clientY - centerY;
 
-    const maxTilt = 15;
+    const maxTilt = 12;
     const tiltX = (mouseY / rect.height) * maxTilt;
     const tiltY = -(mouseX / rect.width) * maxTilt;
 
     gsap.to(element, {
       rotationX: tiltX,
       rotationY: tiltY,
-      duration: 0.3,
+      duration: 0.25,
       ease: "power2.out",
       transformPerspective: 1000,
     });
@@ -364,11 +357,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     profileBlock.addEventListener("mouseleave", () => {
-      gsap.to(profileBlock, { rotationX: 0, rotationY: 0, duration: 0.5, ease: "power2.out" });
+      if (!window.gsap) return;
+      gsap.to(profileBlock, { rotationX: 0, rotationY: 0, duration: 0.4, ease: "power2.out" });
     });
 
     profileBlock.addEventListener("touchend", () => {
-      gsap.to(profileBlock, { rotationX: 0, rotationY: 0, duration: 0.5, ease: "power2.out" });
+      if (!window.gsap) return;
+      gsap.to(profileBlock, { rotationX: 0, rotationY: 0, duration: 0.4, ease: "power2.out" });
     });
   }
 
@@ -380,11 +375,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     skillsBlock.addEventListener("mouseleave", () => {
-      gsap.to(skillsBlock, { rotationX: 0, rotationY: 0, duration: 0.5, ease: "power2.out" });
+      if (!window.gsap) return;
+      gsap.to(skillsBlock, { rotationX: 0, rotationY: 0, duration: 0.4, ease: "power2.out" });
     });
 
     skillsBlock.addEventListener("touchend", () => {
-      gsap.to(skillsBlock, { rotationX: 0, rotationY: 0, duration: 0.5, ease: "power2.out" });
+      if (!window.gsap) return;
+      gsap.to(skillsBlock, { rotationX: 0, rotationY: 0, duration: 0.4, ease: "power2.out" });
     });
   }
 
@@ -419,10 +416,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Skills / Profile geçişi (View Results)
+  // Skills / Profile geçişi (yalnızca HTML'de varsa)
   let isShowingSkills = false;
 
   function toggleResults() {
+    if (!window.gsap) return;
     if (!profileBlock || !skillsBlock || !resultsHint) return;
 
     if (!isShowingSkills) {
@@ -441,9 +439,9 @@ document.addEventListener("DOMContentLoaded", () => {
             { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" }
           );
 
-          if (pythonBar) gsap.to(pythonBar, { width: "87%", duration: 2, ease: "power2.out" });
-          if (cppBar) gsap.to(cppBar, { width: "75%", duration: 2, ease: "power2.out" });
-          if (csharpBar) gsap.to(csharpBar, { width: "80%", duration: 2, ease: "power2.out" });
+          if (pythonBar) gsap.to(pythonBar, { width: "87%", duration: 1.8, ease: "power2.out" });
+          if (cppBar) gsap.to(cppBar, { width: "75%", duration: 1.8, ease: "power2.out" });
+          if (csharpBar) gsap.to(csharpBar, { width: "80%", duration: 1.8, ease: "power2.out" });
         },
       });
 
