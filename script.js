@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Bio typewriter
   const bioMessages = [
     "Edeb bir tâc imiş nûr-ı Hüdâ’dan, giy ol tâcı emin ol her belâdan.",
-    "\"Söz ile değil, hâl ile görünür kişi, Edep ile yükselir her işin işi.\"",
+    "\"Söz ile değil, hâl ile görünür kişi, Edep ile yükselir her işin işi.\""
   ];
   let bioText = "";
   let bioIndex = 0;
