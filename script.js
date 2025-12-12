@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const profileName = document.getElementById("profile-name");
   const profileBio = document.getElementById("profile-bio");
-  const visitorCount = document.getElementById("visitor-count");
 
   const backgroundMusic = document.getElementById("background-music");
 
@@ -50,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const badges = document.querySelectorAll(".badge");
 
   // Güvenlik: element yoksa patlamasın
-  if (!startScreen || !startText || !profileName || !profileBio || !visitorCount || !backgroundMusic) {
+  if (!startScreen || !startText || !profileName || !profileBio || !backgroundMusic) {
     console.error("Required elements missing in HTML.");
     return;
   }
@@ -116,28 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
     startCursorVisible = !startCursorVisible;
     startText.textContent = startTextContent + (startCursorVisible ? "|" : " ");
   }, 500);
-
-  // Ziyaretçi sayacı
-  function initializeVisitorCounter() {
-    let totalVisitors = localStorage.getItem("totalVisitorCount");
-    if (!totalVisitors) {
-      totalVisitors = 1;
-      localStorage.setItem("totalVisitorCount", totalVisitors);
-    } else {
-      totalVisitors = parseInt(totalVisitors, 10);
-    }
-
-    const hasVisited = localStorage.getItem("hasVisited");
-    if (!hasVisited) {
-      totalVisitors++;
-      localStorage.setItem("totalVisitorCount", totalVisitors);
-      localStorage.setItem("hasVisited", "true");
-    }
-
-    visitorCount.textContent = totalVisitors.toLocaleString();
-  }
-
-  initializeVisitorCounter();
 
   // Start ekran tıklanınca müzik başlat + profile aç
   function enterSite() {
@@ -230,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Bio typewriter
   const bioMessages = [
     "Edeb bir tâc imiş nûr-ı Hüdâ’dan, giy ol tâcı emin ol her belâdan.",
-    "\"Söz ile değil, hâl ile görünür kişi, Edep ile yükselir her işin işi.\""
+    "\"Söz ile değil, hâl ile görünür kişi, Edep ile yükselir her işin işi.\"",
   ];
   let bioText = "";
   let bioIndex = 0;
@@ -345,7 +322,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       profileName.style.opacity = "1";
       profileBio.style.opacity = "1";
-      visitorCount.style.opacity = "1";
     });
   }
 
