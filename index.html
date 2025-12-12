@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="made by galseyz">
 
-    <!-- Favicon (sekme ikonu) -->
-    <!-- İstersen href içindeki görseli kendi PNG/ICO ikonunla değiştir -->
-    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Red_star.svg/256px-Red_star.svg.png" />
+    <!-- Sekme logosu (favicon) -->
+    <!-- İstersen başka bir SVG/PNG linkiyle değiştirebilirsin -->
+    <link rel="icon" type="image/svg+xml"
+          href="https://api.iconify.design/ph:game-controller-bold.svg?color=%23ffffff" />
 
     <style>
         :root {
@@ -124,20 +125,25 @@
         }
 
         .logo-mark {
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             border-radius: 999px;
             background:
-                conic-gradient(from 220deg, #a5b4fc, #4f46e5, #f97316, #a5b4fc);
+                radial-gradient(circle at 30% 0, #ffffff, #a5b4fc 18%, #4f46e5 48%, #111827 80%);
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow:
-                0 0 0 1px rgba(255,255,255,0.12),
+                0 0 0 1px rgba(255,255,255,0.18),
                 0 16px 38px rgba(15,23,42,0.9);
-            font-weight: 700;
-            font-size: 1rem;
-            color: #0b1020;
+            overflow: hidden;
+        }
+
+        .logo-mark img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.65));
         }
 
         .logo-text-main {
@@ -229,6 +235,7 @@
 
         section {
             margin-top: 3rem;
+            scroll-margin-top: 90px;
         }
 
         .hero {
@@ -721,7 +728,10 @@
 <header>
     <nav class="nav">
         <div class="logo">
-            <div class="logo-mark">G</div>
+            <div class="logo-mark">
+                <!-- Header logosu (SVG gamepad) -->
+                <img src="https://api.iconify.design/ph:game-controller-bold.svg?color=%23ffffff" alt="GalseyZ Logo">
+            </div>
             <div>
                 <div class="logo-text-main">GALSEYZ</div>
                 <div class="logo-text-sub">TSG Studios</div>
@@ -970,7 +980,7 @@
 </main>
 
 <footer>
-    <span>© <script>document.write(new Date().getFullYear());</script> made by galseyz.</span>
+    <span>© <script>document.write(new Date().getFullYear());</script> galseyz tarafından sevgiyle hazırlandı ❤️</span>
     <span>TSG & Anatolian Studios</span>
 </footer>
 
