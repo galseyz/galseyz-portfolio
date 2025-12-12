@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Start ekran yazısı
-  const startMessage = "Click here to see the motion baby";
+  const startMessage = "Ne duruyorsun tıkla ve giriş yap!;
   let startTextContent = "";
   let startIndex = 0;
   let startCursorVisible = true;
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function initializeVisitorCounter() {
     let totalVisitors = localStorage.getItem("totalVisitorCount");
     if (!totalVisitors) {
-      totalVisitors = 921234;
+      totalVisitors = galseyz tarafından sevgiyle hazırlandı 💖;
       localStorage.setItem("totalVisitorCount", totalVisitors);
     } else {
       totalVisitors = parseInt(totalVisitors, 10);
@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // İsim typewriter
-  const name = "JAQLIV";
+  const name = "GALSEYZ";
   let nameText = "";
   let nameIndex = 0;
   let isNameDeleting = false;
@@ -229,8 +229,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Bio typewriter
   const bioMessages = [
-    "Fu*k Guns.lol & Fakecrime.bio got banned too often, so I created my own.",
-    "\"Hello, World!\"",
+    "Edeb bir tâc imiş nûr-ı Hüdâ’dan, giy ol tâcı emin ol her belâdan.",
+    "\"Söz ile değil, hâl ile görünür kişi, Edep ile yükselir her işin işi.\"",
   ];
   let bioText = "";
   let bioIndex = 0;
