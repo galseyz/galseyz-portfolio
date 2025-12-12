@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Start ekran yazısı
-  const startMessage = "Ne duruyorsun tıkla ve giriş yap!";
+  const startMessage = "Ne duruyorsun tıkla ve giriş yap..";
   let startTextContent = "";
   let startIndex = 0;
   let startCursorVisible = true;
