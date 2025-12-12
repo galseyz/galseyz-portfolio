@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!isTouchDevice) {
-      // cursorTrailEffect varsa çalıştır, yoksa hata basmasın
+      // cursorTrailEffect varsa çalıştır, yoksa hata basmasın.
       try {
         if (typeof cursorTrailEffect === "function") {
           new cursorTrailEffect({ length: 10, size: 8, speed: 0.2 });
