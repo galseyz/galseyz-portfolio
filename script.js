@@ -117,40 +117,36 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 500);
 
   // İsim typewriter (boş kalmasın diye: silme bittiğinde geri yaz)
-const name = "GALSEYZ";
-const MIN_CHARS = 1; // "G" sabit kalsın
+  const name = "GALSEYZ";
+  let nameText = '';
+  let nameIndex = 0;
+  let isNameDeleting = false;
+  let nameCursorVisible = true;
 
-let nameText = "";
-let nameIndex = 0;
-let isNameDeleting = false;
-let nameCursorVisible = true;
-
-function typeWriterName() {
-  if (!isNameDeleting && nameIndex < name.length) {
-    nameIndex++;
-    nameText = name.slice(0, nameIndex);
-
-  } else if (isNameDeleting && nameIndex > MIN_CHARS) {
-    nameIndex--;
-    nameText = name.slice(0, nameIndex);
-
-  } else if (nameIndex === name.length) {
-    isNameDeleting = true;
-    setTimeout(typeWriterName, 6000); // tam yazılı bekle
-    return;
-
-  } else if (nameIndex === MIN_CHARS && isNameDeleting) {
-    isNameDeleting = false;
-    setTimeout(typeWriterName, 600); // G kalır, tekrar yaz
-    return;
+  function typeWriterName() {
+    if (!isNameDeleting && nameIndex < name.length) {
+      nameText = name.slice(0, nameIndex + 1);
+      nameIndex++;
+    } else if (isNameDeleting && nameIndex > 0) {
+      nameText = name.slice(0, nameIndex - 1);
+      nameIndex--;
+    } else if (nameIndex === name.length) {
+      isNameDeleting = true;
+      setTimeout(typeWriterName, 10000);
+      return;
+    } else if (nameIndex === 0) {
+      isNameDeleting = false;
+    }
+    profileName.textContent = nameText + (nameCursorVisible ? '|' : ' ');
+    if (Math.random() < 0.1) {
+      profileName.classList.add('glitch');
+      setTimeout(() => profileName.classList.remove('glitch'), 200);
+    }
+    setTimeout(typeWriterName, isNameDeleting ? 150 : 300);
   }
 
-  profileName.textContent = nameText + (nameCursorVisible ? "|" : " ");
-
-  setTimeout(typeWriterName, isNameDeleting ? 120 : 220);
-}
-
-
+  setInterval(() => {
+    nameCursorVisible = !nameCursorVisible;
     profileName.textContent = nameText + (nameCursorVisible ? "|" : " ");
 
     if (Math.random() < 0.08) {
