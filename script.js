@@ -117,54 +117,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 500);
 
   // İsim typewriter (boş kalmasın diye: silme bittiğinde geri yaz)
-const name = "GALSEYZX";
-const MIN_CHARS = 1; // G sabit kalsın
+  const name = "GALSEYZX";
+  let nameText = '';
+  let nameIndex = 0;
+  let isNameDeleting = false;
+  let nameCursorVisible = true;
 
-let nameText = "";
-let nameIndex = 0;
-let isNameDeleting = false;
-let nameCursorVisible = true;
-
-function typeWriterName() {
-  // Yazma
-  if (!isNameDeleting && nameIndex < name.length) {
-    nameIndex++;
-    nameText = name.slice(0, nameIndex);
-
-  // Silme (MIN_CHARS altına inme)
-  } else if (isNameDeleting && nameIndex > MIN_CHARS) {
-    nameIndex--;
-    nameText = name.slice(0, nameIndex);
-
-  // Tam yazıldıysa bekle, sonra silmeye başla
-  } else if (nameIndex === name.length) {
-    isNameDeleting = true;
-    setTimeout(typeWriterName, 6000);
-    return;
-
-  // MIN_CHARS'a geldiyse bekle, sonra tekrar yaz
-  } else if (nameIndex === MIN_CHARS && isNameDeleting) {
-    isNameDeleting = false;
-    setTimeout(typeWriterName, 600);
-    return;
+  function typeWriterName() {
+    if (!isNameDeleting && nameIndex < name.length) {
+      nameText = name.slice(0, nameIndex + 1);
+      nameIndex++;
+    } else if (isNameDeleting && nameIndex > 0) {
+      nameText = name.slice(0, nameIndex - 1);
+      nameIndex--;
+    } else if (nameIndex === name.length) {
+      isNameDeleting = true;
+      setTimeout(typeWriterName, 10000);
+      return;
+    } else if (nameIndex === 0) {
+      isNameDeleting = false;
+    }
+    profileName.textContent = nameText + (nameCursorVisible ? '|' : ' ');
+    if (Math.random() < 0.1) {
+      profileName.classList.add('glitch');
+      setTimeout(() => profileName.classList.remove('glitch'), 200);
+    }
+    setTimeout(typeWriterName, isNameDeleting ? 150 : 300);
   }
 
-  profileName.textContent = nameText + (nameCursorVisible ? "|" : " ");
-
-  if (Math.random() < 0.08) {
-    profileName.classList.add("glitch");
-    setTimeout(() => profileName.classList.remove("glitch"), 150);
-  }
-
-  setTimeout(typeWriterName, isNameDeleting ? 120 : 220);
-}
-
-// Sadece cursor blink (typeWriterName burada ÇAĞRILMAZ)
-setInterval(() => {
-  nameCursorVisible = !nameCursorVisible;
-  profileName.textContent = nameText + (nameCursorVisible ? "|" : " ");
-}, 500);
-  // Bio typewriter
+  setInterval(() => {
+    nameCursorVisible = !nameCursorVisible;
+    profileName.textContent = nameText + (nameCursorVisible ? '|' : ' ');
+  }, 500);
   const bioMessages = [
     "Edeb bir tâc imiş nûr-ı Hüdâ’dan, giy ol tâcı emin ol her belâdan.",
     "Söz ile değil, hâl ile görünür kişi; edep ile yükselir işin işi."
