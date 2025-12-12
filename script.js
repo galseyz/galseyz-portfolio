@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Start ekran yazısı
-  const startMessage = "Ne duruyorsun tıkla ve giriş yap!;
+  const startMessage = "Ne duruyorsun tıkla ve giriş yap!";
   let startTextContent = "";
   let startIndex = 0;
   let startCursorVisible = true;
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function initializeVisitorCounter() {
     let totalVisitors = localStorage.getItem("totalVisitorCount");
     if (!totalVisitors) {
-      totalVisitors = galseyz tarafından sevgiyle hazırlandı 💖;
+      totalVisitors = 1;
       localStorage.setItem("totalVisitorCount", totalVisitors);
     } else {
       totalVisitors = parseInt(totalVisitors, 10);
